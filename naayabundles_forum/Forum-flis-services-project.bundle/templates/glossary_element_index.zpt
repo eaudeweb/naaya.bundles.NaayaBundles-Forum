@@ -68,7 +68,7 @@
       </fieldset>
     </div>
 
-    <strong>
+    <h3>
       <img src="misc_/NaayaGlossary/element.gif" alt="Glossary Element" title="Glossary Element" align="middle" i18n:attributes="title; alt" />&nbsp;
       <span tal:content="translation" tal:condition="translation" />
       <span tal:condition="python:not translation">
@@ -82,12 +82,14 @@
         (<em i18n:translate="">undefined language</em>)
       </span>
       <a tal:condition="here/checkPermissionManageGlossary" class="button edit-link" tal:attributes="href string:${here/aq_parent/aq_parent/absolute_url}?item=${here/aq_parent/getId}/${here/getId}#glossary_management_div">edit</a>
-    </strong>
-
+      <a tal:condition="here/checkPermissionManageGlossary" class="button edit-link" tal:attributes="href string:${here/aq_parent/absolute_url}/del_element?item=${here/getId}">delete</a>
+    </h3>
+    <hr style="border: 0; border-top: 1px solid #ddd; background: transparent; height: 0;">
+                
     <p i18n:translate="" tal:content="structure deftranslation" tal:condition="deftranslation"/>
 
     <tal:block condition="here/source">
-      <h3 i18n:translate="">Source</h3>
+      <h3 i18n:translate="">Sources</h3>
       <p tal:content="structure here/source" />
     </tal:block>
 

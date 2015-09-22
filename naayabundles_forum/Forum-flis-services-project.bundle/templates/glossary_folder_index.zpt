@@ -74,13 +74,54 @@
     </div>
 
   <table cellspacing="7" class="table_list"
-      tal:define="obj_list python:here.get_objects_sorted(selected_lang)">
+      tal:define="obj_list python:here.get_objects_sorted(selected_lang);
+                  obj_pairs python:[(obj_list[i], obj_list[i+len(obj_list)/2]) for i in range(len(obj_list)/2)]">
     <!-- Elements display -->
-    <tal:block repeat="item obj_list">
-    <tr>
+    <tal:block repeat="item obj_pairs">
+    <tr tal:define="item1 python:item[0];
+                    item2 python:item[1]">
       <td width="15" align="left" valign="top"><img src="misc_/NaayaGlossary/element.gif" alt="Glossary element" title="Glossary element" i18n:attributes="title alt"></td>
-      <td width="707" tal:define="elem_trans python:item.get_translation_by_language(language);
-                def_trans python:item.get_def_trans_by_language(language)">
+      <td width="707" tal:define="elem_trans python:item1.get_translation_by_language(language);
+                def_trans python:item1.get_def_trans_by_language(language)">
+        <a tal:condition="elem_trans"
+          tal:attributes="href string:${item1/absolute_url}?lang=${selected_lang};
+                          title  def_trans"
+          tal:content="elem_trans" />
+        <tal:block condition="python:not elem_trans">
+          <em><a tal:attributes="href string:${item1/absolute_url}?lang=${selected_lang};
+                    title elem_trans"
+            tal:content="item1/English"/></em>
+          (<em i18n:translate="">no translation available for</em> <em tal:content="language" />)
+        </tal:block>
+        <a tal:condition="here/checkPermissionManageGlossary" class="button edit-link" tal:attributes="href string:${here/aq_parent/absolute_url}?item=${here/getId}/${item1/getId}#glossary_management_div">edit</a>
+        <a tal:condition="here/checkPermissionManageGlossary" class="button edit-link" tal:attributes="href string:${here/absolute_url}/del_element?item=${item1/getId}">delete</a>
+      </td>
+
+      <td width="15" align="left" valign="top"><img src="misc_/NaayaGlossary/element.gif" alt="Glossary element" title="Glossary element" i18n:attributes="title alt"></td>
+      <td width="707" tal:define="elem_trans python:item2.get_translation_by_language(language);
+                def_trans python:item2.get_def_trans_by_language(language)">
+        <a tal:condition="elem_trans"
+          tal:attributes="href string:${item2/absolute_url}?lang=${selected_lang};
+                          title  def_trans"
+          tal:content="elem_trans" />
+        <tal:block condition="python:not elem_trans">
+          <em><a tal:attributes="href string:${item2/absolute_url}?lang=${selected_lang};
+                    title elem_trans"
+            tal:content="item2/English"/></em>
+          (<em i18n:translate="">no translation available for</em> <em tal:content="language" />)
+        </tal:block>
+        <a tal:condition="here/checkPermissionManageGlossary" class="button edit-link" tal:attributes="href string:${here/aq_parent/absolute_url}?item=${here/getId}/${item2/getId}#glossary_management_div">edit</a>
+        <a tal:condition="here/checkPermissionManageGlossary" class="button edit-link" tal:attributes="href string:${here/absolute_url}/del_element?item=${item2/getId}">delete</a>
+      </td>
+    </tr>
+    </tal:block>
+
+    <tr tal:condition="python:len(obj_list) / 2 * 2 != len(obj_list)">
+      <td width="15" align="left" valign="top"><img src="misc_/NaayaGlossary/element.gif" alt="Glossary element" title="Glossary element" i18n:attributes="title alt"></td>
+      <td width="707"
+        tal:define="item python:obj_list[-1];
+                    elem_trans python:item.get_translation_by_language(language);
+                    def_trans python:item.get_def_trans_by_language(language)">
         <a tal:condition="elem_trans"
           tal:attributes="href string:${item/absolute_url}?lang=${selected_lang};
                           title  def_trans"
@@ -92,14 +133,16 @@
           (<em i18n:translate="">no translation available for</em> <em tal:content="language" />)
         </tal:block>
         <a tal:condition="here/checkPermissionManageGlossary" class="button edit-link" tal:attributes="href string:${here/aq_parent/absolute_url}?item=${here/getId}/${item/getId}#glossary_management_div">edit</a>
+        <a tal:condition="here/checkPermissionManageGlossary" class="button edit-link" tal:attributes="href string:${here/absolute_url}/del_element?item=${item/getId}">delete</a>
       </td>
     </tr>
-    </tal:block>
 
     <tr tal:condition="python: not obj_list">
       <td colspan="2" i18n:translate="">No elements in this glossary folder.</td>
     </tr>
   </table>
+
+<a class="button" tal:attributes="href python:'%s/index_html?insert=%s#glossary_add_div' % (here.aq_parent.absolute_url(), here.getId())" i18n:translate="">add</a>
 
 </tal:block>
 
