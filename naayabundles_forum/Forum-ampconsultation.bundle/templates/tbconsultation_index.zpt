@@ -148,7 +148,8 @@
 <tbody>
     <tr tal:repeat="section here/list_sections">
       <tal:block
-        define="header_only python:section.objectValues()[0].body=='<p>Header</p>'">
+        define="header_only python:section.objectValues()[0].body=='<p>Header</p>';
+                level_one section/is_level_one_section|nothing">
         <td tal:condition="manage_perm"
             class="talkback-section_list-edit_column">
             <input type="checkbox" name="del_section_id:list"
@@ -163,10 +164,12 @@
             <tal:block condition="section/is_level_three_section|nothing">
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </tal:block>
-            <a tal:condition="not:header_only"
-               tal:attributes="href section/absolute_url"
+            <a tal:condition="not: header_only"
+               tal:attributes="href section/absolute_url;
+                               style python:test(level_one, 'font-size: large;; font-weight: bold', '')"
                tal:content="section/title_or_id"></a>
-            <span style="font-size: large"><strong i18n:translate="" tal:condition="header_only"
+            <span style="font-size: large" tal:condition="header_only">
+              <strong i18n:translate=""
                 tal:content="section/title_or_id"></strong></span>
         </td>
         <td tal:content="python:test(header_only, '', section.comment_count())" />
